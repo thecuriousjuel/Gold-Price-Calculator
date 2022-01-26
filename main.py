@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask import request
 import sqlite3
+import os
 
 
 app = Flask(__name__)
@@ -28,7 +29,7 @@ def currency_format(number):
 
 
 def get_today_rate(value=''):
-    conn = sqlite3.connect('Rate.db')
+    conn = sqlite3.connect(os.path.join('database', 'Rate.db'))
     try:
         today_date = list(conn.execute('SELECT DATE();'))[0][0]
         output = conn.execute(f"SELECT RATE FROM GOLD_RATE WHERE DATE='{today_date}';")
@@ -46,9 +47,8 @@ def get_today_rate(value=''):
         return value
     
 
-
 def store_today_gold_rate(gold_rate):
-    conn = sqlite3.connect('Rate.db')
+    conn = sqlite3.connect(os.path.join('database', 'Rate.db'))
     today_date = list(conn.execute('SELECT DATE();'))[0][0]
 
     try:
@@ -103,5 +103,5 @@ def homepage():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
