@@ -55,7 +55,7 @@ def store_today_gold_rate(gold_rate):
         conn.execute(f"""INSERT INTO GOLD_RATE (DATE, RATE) VALUES ('{today_date}', '{gold_rate}')""")
         conn.commit()
         conn.close()
-        
+
     except sqlite3.IntegrityError:
         conn.execute(f"UPDATE GOLD_RATE SET RATE = {gold_rate} WHERE DATE = '{today_date}'")
         conn.commit()
@@ -92,7 +92,7 @@ def calculate():
                      total_gst=currency_format(round(total_gst,2)), 
                      total_price=currency_format(round(total_price, 2)))
 
-    return render_template('index.html', price_dict=price_dict)
+    return render_template('rate.html', price_dict=price_dict)
 
 
 @app.route('/', methods=['GET'])
