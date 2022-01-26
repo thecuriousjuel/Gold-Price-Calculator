@@ -29,7 +29,7 @@ def calculate():
     return price_dict
 
     
-@app.route('/')
+@app.route('/', methods=['GET'])
 def homepage():
     return render_template('index.html')
 
