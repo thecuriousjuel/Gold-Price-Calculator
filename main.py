@@ -4,14 +4,18 @@ from flask import request
 
 app = Flask(__name__)
 
+
+def give_alert(value):
+    return "<script>alert(f'Enter {value}')</script>"
+
 @app.route('/calculate', methods=['POST'])
 def calculate():
-
+    
     weight = float(request.form['weight'])
     making_charge = float(request.form['making'])
     gold_rate = float(request.form['rate'])
     gst = float(request.form['gst'])
-
+    
     if weight > 1:
         making_price_per_gram = gold_rate + ((making_charge/100) * gold_rate)
         gold_price = making_price_per_gram * weight
@@ -24,9 +28,12 @@ def calculate():
     total_gst = gold_price * (gst/100)
     total_price = gold_price + total_gst
 
-    price_dict = dict(total_gst=total_gst, total_price=total_price)
+    price_dict = dict(gold_price=round(gold_price,2), total_gst=round(total_gst,2), total_price=round(total_price, 2))
 
-    return price_dict
+    return render_template('index.html', price_dict=price_dict)
+
+    
+    
 
     
 @app.route('/', methods=['GET'])
