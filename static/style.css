@@ -11,7 +11,7 @@ body
 {
     background-color: blanchedalmond;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     border-color: black;
     border-width: 5px;
 }
@@ -20,4 +20,14 @@ button.btn
 {
     background-color: black;
     border: black;
+}
+
+::placeholder
+{
+    text-align: center;
+}
+
+input[type="number"]
+{
+    text-align: center;
 }
