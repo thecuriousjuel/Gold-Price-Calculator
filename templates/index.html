@@ -12,6 +12,10 @@
     <title>Gold Price Calculator</title>
 </head>
 <body>
+    <div class="d-flex justify-content-center border border-dark">
+        <h1>Gold Price Calculator</h1>
+    </div>
+    
     <form action="/calculate" method="POST">
     <div class="mb-3 row">
         <label for="weight" class="col-sm-2 col-form-label">Gold Weight</label>
@@ -40,8 +44,9 @@
             <input name="gst" id="gst" type="number" step="0.001" class="form-control" value="3" readonly required>
         </div>
     </div>
-
+    
     <button type="submit" class="btn btn-lg btn-primary mb-3">Get Price</button>
+
     </form>
 
     {% if price_dict %}

@@ -5,6 +5,19 @@ body
     font-family: 'Outfit', sans-serif;
     padding: 10px;
     font-size: 20px;
-    /* color: white; */
-    /* background-color:  #6200EE; */
+}
+
+.d-flex
+{
+    background-color: blanchedalmond;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-color: black;
+    border-width: 5px;
+}
+
+button.btn
+{
+    background-color: black;
+    border: black;
 }
