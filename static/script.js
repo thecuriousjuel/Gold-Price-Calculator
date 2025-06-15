@@ -6,6 +6,17 @@ document.addEventListener('DOMContentLoaded', loadMainPage)
 
 // Functions
 
+function formatAmountToIndianCurrency(amount) {
+    const formatted = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount);
+    const formattedWithRs = formatted.replace('₹', 'Rs. ');
+    return formattedWithRs;
+}
+
 function loadMainPage() {
     const heading = `
         <div class="d-flex justify-content-center border border-dark">
@@ -41,11 +52,10 @@ function loadMainPage() {
                 <input name="gst" id="gst" type="number" step="0.001" class="form-control form-control-lg" value="3" readonly disabled>
             </div>
         </div>
-        
-        <button type="button" class="btn btn-lg btn-primary mb-3">Get Price</button>
-
-        <button type="button" class="btn btn-lg btn-danger mb-3">Clear</button>
-
+        <div class="action">
+            <button type="button" class="btn btn-lg btn-primary mb-3">Get Price</button>
+            <button type="button" class="btn btn-lg btn-danger mb-3">Clear</button>
+        </div>
     </div>`
 
     const mainContainer = document.querySelector('#main-container');
@@ -68,8 +78,10 @@ function loadMainPage() {
         }
     }
 
-    const buttonEventListener = document.querySelector('.btn');
-    buttonEventListener.addEventListener('click', (event) => {
+    const calculateButtonEventListener = document.querySelector('.btn-primary');
+    const clearButtonEventListener = document.querySelector(".btn-danger");
+
+    calculateButtonEventListener.addEventListener('click', (event) => {
         if (!weightInput.checkValidity()) {
             weightInput.reportValidity();
         } else if (!makingChargeInput.checkValidity()) {
@@ -84,13 +96,13 @@ function loadMainPage() {
             const taxPercent = parseFloat(taxPercentInput.value);
 
             // Step 1: Add 12% making charge
-            const priceWithMaking = (goldRate / 1000) * (1 + (markingCharge / 100));
+            const priceWithMaking = (goldRate / 10) * (1 + (markingCharge / 100));
             // Step 2: Multiply by weight
             const subtotal = priceWithMaking * weight;
             // Step 3: Calculate tax amount
             const taxAmount = subtotal * (taxPercent / 100);
             // Step 4: Final price
-            const totalPrice = subtotal * taxAmount;
+            const totalPrice = subtotal + taxAmount;
 
             const totalPriceBreakdown = `
                 <table border="1" class="table">
@@ -101,22 +113,22 @@ function loadMainPage() {
             
                     <tr>
                         <td>Gold Price</td>
-                        <td>Rs. ${subtotal}</td>
+                        <td>${formatAmountToIndianCurrency(subtotal)}</td>
                     </tr>
             
                     <tr>
-                        <td>Total GST (3%)</td>
-                        <td>Rs. ${taxAmount}</td>
+                        <td>Total GST (${taxPercent}%)</td>
+                        <td>${formatAmountToIndianCurrency(taxAmount)}</td>
                     </tr>
             
                     <tr>
                         <td>Total Price with GST</td>
-                        <td>Rs. ${totalPrice}</td>
+                        <td><strong>${formatAmountToIndianCurrency(totalPrice)}</strong></td>
                     </tr>
             
               </table>`
 
-            mainContainer.innerHTML += "<br/>" + totalPriceBreakdown 
+            mainContainer.innerHTML += "<br/>" + totalPriceBreakdown
 
             goldMetaData = {
                 "rate": goldRate,
@@ -124,5 +136,10 @@ function loadMainPage() {
             }
             localStorage.setItem("goldMetaData", JSON.stringify(goldMetaData))
         }
+    })
+
+    clearButtonEventListener.addEventListener('click', (event) => {
+        console.log('working')
+        loadMainPage();
     })
 }
