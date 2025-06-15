@@ -78,9 +78,16 @@ function loadMainPage() {
         }
     }
 
-    const calculateButtonEventListener = document.querySelector('.btn-primary');
-    const clearButtonEventListener = document.querySelector(".btn-danger");
+    weightInput.addEventListener('input', (event) => {
+        if (parseFloat(weightInput.value) < 1) {
+            makingChargeInput.value = 14;
+        }
+        else {
+            makingChargeInput.value = 13;
+        }
+    })
 
+    const calculateButtonEventListener = document.querySelector('.btn-primary');
     calculateButtonEventListener.addEventListener('click', (event) => {
         if (!weightInput.checkValidity()) {
             weightInput.reportValidity();
@@ -138,6 +145,7 @@ function loadMainPage() {
         }
     })
 
+    const clearButtonEventListener = document.querySelector(".btn-danger");
     clearButtonEventListener.addEventListener('click', (event) => {
         console.log('working')
         loadMainPage();
