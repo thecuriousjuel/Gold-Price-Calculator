@@ -153,7 +153,6 @@ function loadMainPage() {
     clearButtonEventListener.addEventListener('click', (event) => {
         weightInput.value = '';
         makingChargeInput.value = '';
-        goldRateInput.value = '';
         document.querySelector('#result-container').innerHTML = '';
     });
 
