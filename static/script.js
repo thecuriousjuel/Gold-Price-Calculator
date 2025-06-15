@@ -30,28 +30,28 @@ function loadMainPage() {
     const body = `
     <div>
         <div class="mb-3 row">
-            <label for="weight" class="col-sm-2 col-form-label">Gold Weight</label>
+            <label for="weight" class="col-sm-2 col-form-label fw-bold">Gold Weight</label>
             <div class="col-sm-10">
             <input name="weight" id="weight" type="number" step="0.001" class="form-control form-control-lg" placeholder="grams" min=0 required>
             </div>
         </div>
 
         <div class="mb-3 row">
-            <label for="making" class="col-sm-2 col-form-label">Making Charge (%)</label>
+            <label for="making" class="col-sm-2 col-form-label fw-bold">Making Charge (%)</label>
             <div class="col-sm-10">
                 <input name="making" id="making" type="number" step="1" class="form-control form-control-lg" placeholder="%" min=0 max=100 required>
             </div>
         </div>
 
         <div class="mb-3 row">
-            <label for="rate" class="col-sm-2 col-form-label">Rate per 10 grams</label>
+            <label for="rate" class="col-sm-2 col-form-label fw-bold">Rate per 10 grams</label>
             <div class="col-sm-10">
                 <input name="rate" id="rate" type="number" step="0.001" class="form-control form-control-lg" placeholder="Rs. per grams" min=0 required>
             </div>
         </div>
 
         <div class="mb-3 row">
-            <label for="gst" class="col-sm-2 col-form-label">GST (%)</label>
+            <label for="gst" class="col-sm-2 col-form-label fw-bold">GST (%)</label>
             <div class="col-sm-10">
                 <input name="gst" id="gst" type="number" step="0.001" class="form-control form-control-lg" value="3" readonly disabled>
             </div>
@@ -63,7 +63,7 @@ function loadMainPage() {
     </div>`
 
     const mainContainer = document.querySelector('#main-container');
-    mainContainer.innerHTML = heading + "</br>" + body;
+    mainContainer.innerHTML = heading + "</br>" + body + `<div id="result-container"></div>`;
 
     const stored = localStorage.getItem("goldMetaData");
     let goldMetaData = stored ? JSON.parse(stored) : null;
@@ -139,7 +139,7 @@ function loadMainPage() {
             
               </table>`
 
-            mainContainer.innerHTML += "<br/>" + totalPriceBreakdown
+            document.querySelector('#result-container').innerHTML = totalPriceBreakdown;
 
             goldMetaData = {
                 "rate": goldRate,
@@ -151,9 +151,11 @@ function loadMainPage() {
 
     const clearButtonEventListener = document.querySelector(".btn-danger");
     clearButtonEventListener.addEventListener('click', (event) => {
-        console.log(clearButtonEventListener)
-        // location.reload();
+        weightInput.value = '';
+        makingChargeInput.value = '';
+        goldRateInput.value = '';
+        document.querySelector('#result-container').innerHTML = '';
+    });
 
-    })
-    
+
 }
