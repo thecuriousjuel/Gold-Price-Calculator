@@ -1,5 +1,9 @@
 // Author: Biswajit Basak
 
+const makingCharge13 = 13;
+const makingCharge14 = 14;
+const weightChangeBoundary = 1
+
 // Event Listener
 document.addEventListener('DOMContentLoaded', loadMainPage)
 
@@ -79,11 +83,11 @@ function loadMainPage() {
     }
 
     weightInput.addEventListener('input', (event) => {
-        if (parseFloat(weightInput.value) < 1) {
-            makingChargeInput.value = 14;
+        if (parseFloat(weightInput.value) < weightChangeBoundary) {
+            makingChargeInput.value = makingCharge14;
         }
         else {
-            makingChargeInput.value = 13;
+            makingChargeInput.value = makingCharge13;
         }
     })
 
@@ -147,7 +151,9 @@ function loadMainPage() {
 
     const clearButtonEventListener = document.querySelector(".btn-danger");
     clearButtonEventListener.addEventListener('click', (event) => {
-        console.log('working')
-        loadMainPage();
+        console.log(clearButtonEventListener)
+        // location.reload();
+
     })
+    
 }
