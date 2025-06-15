@@ -44,6 +44,8 @@ function loadMainPage() {
         
         <button type="button" class="btn btn-lg btn-primary mb-3">Get Price</button>
 
+        <button type="button" class="btn btn-lg btn-danger mb-3">Clear</button>
+
     </div>`
 
     const mainContainer = document.querySelector('#main-container');
@@ -55,11 +57,13 @@ function loadMainPage() {
     const weightInput = document.querySelector('#weight');
     const makingChargeInput = document.querySelector('#making');
     const goldRateInput = document.querySelector('#rate');
-    const currentDate = new Date().toDateString(); 
+    const taxPercentInput = document.querySelector('#gst');
+
+    const currentDate = new Date().toDateString();
 
     if (goldMetaData) {
         const storedDate = goldMetaData["date"]
-        if (storedDate == currentDate){
+        if (storedDate == currentDate) {
             goldRateInput.value = goldMetaData["rate"]
         }
     }
@@ -74,40 +78,51 @@ function loadMainPage() {
             goldRateInput.reportValidity()
         }
         else {
-
             const weight = parseFloat(weightInput.value);
-            const markingCharge = parseFloat(makingChargeInput.value);
             const goldRate = parseFloat(goldRateInput.value);
+            const markingCharge = parseFloat(makingChargeInput.value);
+            const taxPercent = parseFloat(taxPercentInput.value);
+
+            // Step 1: Add 12% making charge
+            const priceWithMaking = (goldRate / 1000) * (1 + (markingCharge / 100));
+            // Step 2: Multiply by weight
+            const subtotal = priceWithMaking * weight;
+            // Step 3: Calculate tax amount
+            const taxAmount = subtotal * (taxPercent / 100);
+            // Step 4: Final price
+            const totalPrice = subtotal * taxAmount;
+
+            const totalPriceBreakdown = `
+                <table border="1" class="table">
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
+            
+                    <tr>
+                        <td>Gold Price</td>
+                        <td>Rs. ${subtotal}</td>
+                    </tr>
+            
+                    <tr>
+                        <td>Total GST (3%)</td>
+                        <td>Rs. ${taxAmount}</td>
+                    </tr>
+            
+                    <tr>
+                        <td>Total Price with GST</td>
+                        <td>Rs. ${totalPrice}</td>
+                    </tr>
+            
+              </table>`
+
+            mainContainer.innerHTML += "<br/>" + totalPriceBreakdown 
 
             goldMetaData = {
                 "rate": goldRate,
                 "date": currentDate
             }
             localStorage.setItem("goldMetaData", JSON.stringify(goldMetaData))
-
-            //     const totalPriceBreakdown = `
-            //     <table border="1" class="table">
-            //         <tr>
-            //             <th>Description</th>
-            //             <th>Amount</th>
-            //         </tr>
-
-            //         <tr>
-            //             <td>Gold Price</td>
-            //             <td>Rs. ${}</td>
-            //         </tr>
-
-            //         <tr>
-            //             <td>Total GST (3%)</td>
-            //             <td>Rs. ${}</td>
-            //         </tr>
-
-            //         <tr>
-            //             <td>Total Price with GST</td>
-            //             <td>Rs. ${}</td>
-            //         </tr>
-
-            //   </table>`
         }
     })
 }

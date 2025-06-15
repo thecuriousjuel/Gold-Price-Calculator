@@ -16,12 +16,6 @@ body
     border-width: 5px;
 }
 
-button.btn
-{
-    background-color: black;
-    border: black;
-}
-
 ::placeholder
 {
     text-align: center;
