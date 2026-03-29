@@ -14,6 +14,9 @@ function loadMainPage() {
     
     mainContainer.innerHTML = `
         <div class="card">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                <span class="material-icons" id="theme-icon">dark_mode</span>
+            </button>
             <h1 class="card-title">
                 <span class="material-icons">diamond</span>
                 Gold Price Calculator
@@ -61,6 +64,31 @@ function loadMainPage() {
     const hallmarkInput = document.querySelector('#hallmark');
     const taxPercentInput = document.querySelector('#gst');
     
+    // Theme toggle logic
+    const themeToggleBtn = document.querySelector('#theme-toggle');
+    const themeIcon = document.querySelector('#theme-icon');
+    
+    const savedTheme = localStorage.getItem('goldAppTheme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Initialize theme
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeIcon.textContent = 'light_mode';
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeIcon.textContent = 'dark_mode';
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        themeIcon.textContent = newTheme === 'dark' ? 'light_mode' : 'dark_mode';
+        localStorage.setItem('goldAppTheme', newTheme);
+    });
+
     // Load saved preferences
     const stored = localStorage.getItem("goldAppConfig");
     if (stored) {
