@@ -101,10 +101,9 @@ function loadMainPage() {
         // Core logic: applying making charge explicitly to the gold value
         const goldValue = (goldRate / 10) * weight;
         const makingChargeAmount = goldValue * (makingChargePercent / 100);
-        const subtotalBeforeGst = goldValue + makingChargeAmount;
-        const taxAmount = subtotalBeforeGst * (taxPercent / 100);
-        const totalWithoutHallmark = subtotalBeforeGst + taxAmount;
-        const finalTotalPrice = totalWithoutHallmark + hallmarkPrice;
+        const subtotal = goldValue + makingChargeAmount + hallmarkPrice;
+        const taxAmount = subtotal * (taxPercent / 100);
+        const totalPrice = subtotal + taxAmount;
 
         const resultsHTML = `
             <div class="results">
@@ -116,27 +115,23 @@ function loadMainPage() {
                     <span>Making Charge (${makingChargePercent}%)</span>
                     <span>${formatAmountToIndianCurrency(makingChargeAmount)}</span>
                 </div>
-                <div class="result-row">
-                    <span>Total before GST</span>
-                    <span>${formatAmountToIndianCurrency(subtotalBeforeGst)}</span>
-                </div>
-                <div class="result-row">
-                    <span>GST (${taxPercent}%)</span>
-                    <span>${formatAmountToIndianCurrency(taxAmount)}</span>
-                </div>
-                <div class="result-row total">
-                    <span>Total w/o Hallmark</span>
-                    <span>${formatAmountToIndianCurrency(totalWithoutHallmark)}</span>
-                </div>
                 ${hallmarkPrice > 0 ? `
                 <div class="result-row">
                     <span>Hallmark Price</span>
                     <span>${formatAmountToIndianCurrency(hallmarkPrice)}</span>
                 </div>
                 ` : ''}
+                <div class="result-row">
+                    <span>Total before GST</span>
+                    <span>${formatAmountToIndianCurrency(subtotal)}</span>
+                </div>
+                <div class="result-row">
+                    <span>GST (${taxPercent}%)</span>
+                    <span>${formatAmountToIndianCurrency(taxAmount)}</span>
+                </div>
                 <div class="result-row total">
-                    <span>Final Total Price</span>
-                    <span>${formatAmountToIndianCurrency(finalTotalPrice)}</span>
+                    <span>Total Price</span>
+                    <span>${formatAmountToIndianCurrency(totalPrice)}</span>
                 </div>
             </div>
         `;
