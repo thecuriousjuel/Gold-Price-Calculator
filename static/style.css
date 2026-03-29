@@ -1,27 +1,222 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit&display=swap');
-
-body
-{
-    font-family: 'Outfit', sans-serif;
-    padding: 10px;
-    font-size: 20px;
+:root {
+  --primary: #D4AF37; /* Gold */
+  --primary-variant: #AA8C2C;
+  --on-primary: #000000;
+  --background: #121212;
+  --surface: #1E1E1E;
+  --on-background: #E0E0E0;
+  --on-surface: #FFFFFF;
+  --input-bg: #2C2C2C;
+  --border: #444444;
+  --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --elevation-4: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 }
 
-.d-flex
-{
-    background-color: blanchedalmond;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border-color: black;
-    border-width: 5px;
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background);
+  color: var(--on-background);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-::placeholder
-{
-    text-align: center;
+* {
+  box-sizing: inherit;
 }
 
-input[type="number"]
-{
-    text-align: center;
+.container {
+  width: 100%;
+  max-width: 500px;
+  padding: 16px;
+}
+
+.card {
+  background-color: var(--surface);
+  border-radius: 16px;
+  box-shadow: var(--elevation-4);
+  padding: 32px;
+  width: 100%;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 20px -3px rgba(0, 0, 0, 0.5);
+}
+
+.card-title {
+  font-size: 26px;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 28px;
+  text-align: center;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  letter-spacing: 0.5px;
+}
+
+.card-title .material-icons {
+  font-size: 32px;
+}
+
+/* Floating Label Input */
+.input-field {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 20px 16px 12px 16px;
+  font-size: 16px;
+  background-color: var(--input-bg);
+  color: var(--on-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+  background-color: #333333;
+}
+
+.input-field label {
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  color: #AAAAAA;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.input-field input:focus + label,
+.input-field input:not(:placeholder-shown) + label {
+  top: 6px;
+  left: 16px;
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.input-field input:not(:focus):not(:placeholder-shown) + label {
+  color: #AAAAAA;
+}
+
+.input-field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #333;
+  background-color: #222;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--elevation-2);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-variant);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: var(--elevation-2);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  margin-top: 14px;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(212, 175, 55, 0.08);
+  border-color: var(--primary);
+}
+
+/* Results Table */
+.results {
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 15px;
+  color: #CCCCCC;
+}
+
+.result-row span:last-child {
+  color: var(--on-surface);
+  font-weight: 500;
+}
+
+.result-row.total {
+  font-size: 18px;
+  color: var(--primary);
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--border);
+}
+
+.result-row.total span:last-child {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+  .card-title {
+    font-size: 22px;
+  }
 }
