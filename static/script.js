@@ -1,160 +1,161 @@
 // Author: Biswajit Basak
 
-const makingCharge13 = 13;
-const makingCharge14 = 14;
-const weightChangeBoundary = 1
-
-// Event Listener
-document.addEventListener('DOMContentLoaded', loadMainPage)
-
-
-// Functions
-
 function formatAmountToIndianCurrency(amount) {
-    const formatted = new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-IN', {
         style: 'currency',
         currency: 'INR',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-    }).format(amount);
-    const formattedWithRs = formatted.replace('₹', 'Rs. ');
-    return formattedWithRs;
+    }).format(amount).replace('₹', 'Rs. ');
 }
 
 function loadMainPage() {
-    const heading = `
-        <div class="d-flex justify-content-center border border-dark">
-            <h1>Gold Price Calculator</h1>
-        </div>`
-
-    const body = `
-    <div>
-        <div class="mb-3 row">
-            <label for="weight" class="col-sm-2 col-form-label fw-bold">Gold Weight</label>
-            <div class="col-sm-10">
-            <input name="weight" id="weight" type="number" step="0.001" class="form-control form-control-lg" placeholder="grams" min=0 required>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label for="making" class="col-sm-2 col-form-label fw-bold">Making Charge (%)</label>
-            <div class="col-sm-10">
-                <input name="making" id="making" type="number" step="1" class="form-control form-control-lg" placeholder="%" min=0 max=100 required>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label for="rate" class="col-sm-2 col-form-label fw-bold">Rate per 10 grams</label>
-            <div class="col-sm-10">
-                <input name="rate" id="rate" type="number" step="0.001" class="form-control form-control-lg" placeholder="Rs. per grams" min=0 required>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label for="gst" class="col-sm-2 col-form-label fw-bold">GST (%)</label>
-            <div class="col-sm-10">
-                <input name="gst" id="gst" type="number" step="0.001" class="form-control form-control-lg" value="3" readonly disabled>
-            </div>
-        </div>
-        <div class="action">
-            <button type="button" class="btn btn-lg btn-primary mb-3">Get Price</button>
-            <button type="button" class="btn btn-lg btn-danger mb-3">Clear</button>
-        </div>
-    </div>`
-
     const mainContainer = document.querySelector('#main-container');
-    mainContainer.innerHTML = heading + "</br>" + body + `<div id="result-container"></div>`;
+    
+    mainContainer.innerHTML = `
+        <div class="card">
+            <h1 class="card-title">
+                <span class="material-icons">diamond</span>
+                Gold Price Calculator
+            </h1>
+            
+            <div class="input-field">
+                <input id="weight" type="number" step="0.001" min="0" placeholder=" " required>
+                <label for="weight">Gold Weight (grams)</label>
+            </div>
 
-    const stored = localStorage.getItem("goldMetaData");
-    let goldMetaData = stored ? JSON.parse(stored) : null;
+            <div class="input-field">
+                <input id="making" type="number" step="0.1" min="0" max="100" placeholder=" " required>
+                <label for="making">Making Charge (%)</label>
+            </div>
+
+            <div class="input-field">
+                <input id="rate" type="number" step="0.01" min="0" placeholder=" " required>
+                <label for="rate">Rate per 10 grams (Rs.)</label>
+            </div>
+
+            <div class="input-field">
+                <input id="hallmark" type="number" step="0.01" min="0" placeholder=" ">
+                <label for="hallmark">Hallmark Price (Rs.)</label>
+            </div>
+
+            <div class="input-field">
+                <input id="gst" type="number" step="0.1" value="3" placeholder=" " disabled>
+                <label for="gst">GST (%)</label>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="btn-calculate">
+                <span class="material-icons">calculate</span> Calculate
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-clear">
+                <span class="material-icons">clear</span> Clear
+            </button>
+            
+            <div id="result-container"></div>
+        </div>
+    `;
 
     const weightInput = document.querySelector('#weight');
     const makingChargeInput = document.querySelector('#making');
     const goldRateInput = document.querySelector('#rate');
+    const hallmarkInput = document.querySelector('#hallmark');
     const taxPercentInput = document.querySelector('#gst');
-
-    const currentDate = new Date().toDateString();
-
-    if (goldMetaData) {
-        const storedDate = goldMetaData["date"]
-        if (storedDate == currentDate) {
-            goldRateInput.value = goldMetaData["rate"]
+    
+    // Load saved preferences
+    const stored = localStorage.getItem("goldAppConfig");
+    if (stored) {
+        try {
+            const config = JSON.parse(stored);
+            if (config.making) makingChargeInput.value = config.making;
+            if (config.rate) goldRateInput.value = config.rate;
+            if (config.hallmark) hallmarkInput.value = config.hallmark;
+        } catch (e) {
+            console.error("Could not parse stored config");
         }
     }
 
-    weightInput.addEventListener('input', (event) => {
-        if (parseFloat(weightInput.value) < weightChangeBoundary) {
-            makingChargeInput.value = makingCharge14;
-        }
-        else {
-            makingChargeInput.value = makingCharge13;
-        }
-    })
-
-    const calculateButtonEventListener = document.querySelector('.btn-primary');
-    calculateButtonEventListener.addEventListener('click', (event) => {
+    document.querySelector('#btn-calculate').addEventListener('click', () => {
         if (!weightInput.checkValidity()) {
             weightInput.reportValidity();
-        } else if (!makingChargeInput.checkValidity()) {
+            return;
+        }
+        if (!makingChargeInput.checkValidity()) {
             makingChargeInput.reportValidity();
-        } else if (!goldRateInput.checkValidity()) {
-            goldRateInput.reportValidity()
+            return;
         }
-        else {
-            const weight = parseFloat(weightInput.value);
-            const goldRate = parseFloat(goldRateInput.value);
-            const markingCharge = parseFloat(makingChargeInput.value);
-            const taxPercent = parseFloat(taxPercentInput.value);
-
-            // Step 1: Add 12% making charge
-            const priceWithMaking = (goldRate / 10) * (1 + (markingCharge / 100));
-            // Step 2: Multiply by weight
-            const subtotal = priceWithMaking * weight;
-            // Step 3: Calculate tax amount
-            const taxAmount = subtotal * (taxPercent / 100);
-            // Step 4: Final price
-            const totalPrice = subtotal + taxAmount;
-
-            const totalPriceBreakdown = `
-                <table border="1" class="table">
-                    <tr>
-                        <th>Description</th>
-                        <th>Amount</th>
-                    </tr>
-            
-                    <tr>
-                        <td>Gold Price</td>
-                        <td>${formatAmountToIndianCurrency(subtotal)}</td>
-                    </tr>
-            
-                    <tr>
-                        <td>Total GST (${taxPercent}%)</td>
-                        <td>${formatAmountToIndianCurrency(taxAmount)}</td>
-                    </tr>
-            
-                    <tr>
-                        <td>Total Price with GST</td>
-                        <td><strong>${formatAmountToIndianCurrency(totalPrice)}</strong></td>
-                    </tr>
-            
-              </table>`
-
-            document.querySelector('#result-container').innerHTML = totalPriceBreakdown;
-
-            goldMetaData = {
-                "rate": goldRate,
-                "date": currentDate
-            }
-            localStorage.setItem("goldMetaData", JSON.stringify(goldMetaData))
+        if (!goldRateInput.checkValidity()) {
+            goldRateInput.reportValidity();
+            return;
         }
-    })
+        if (hallmarkInput && !hallmarkInput.checkValidity()) {
+            hallmarkInput.reportValidity();
+            return;
+        }
 
-    const clearButtonEventListener = document.querySelector(".btn-danger");
-    clearButtonEventListener.addEventListener('click', (event) => {
-        weightInput.value = '';
-        makingChargeInput.value = '';
-        document.querySelector('#result-container').innerHTML = '';
+        const weight = parseFloat(weightInput.value);
+        const goldRate = parseFloat(goldRateInput.value);
+        const makingChargePercent = parseFloat(makingChargeInput.value);
+        const hallmarkPrice = hallmarkInput.value ? parseFloat(hallmarkInput.value) : 0;
+        const taxPercent = parseFloat(taxPercentInput.value);
+
+        // Core logic: applying making charge explicitly to the gold value
+        const goldValue = (goldRate / 10) * weight;
+        const makingChargeAmount = goldValue * (makingChargePercent / 100);
+        const subtotalBeforeGst = goldValue + makingChargeAmount;
+        const taxAmount = subtotalBeforeGst * (taxPercent / 100);
+        const totalWithoutHallmark = subtotalBeforeGst + taxAmount;
+        const finalTotalPrice = totalWithoutHallmark + hallmarkPrice;
+
+        const resultsHTML = `
+            <div class="results">
+                <div class="result-row">
+                    <span>Gold Value</span>
+                    <span>${formatAmountToIndianCurrency(goldValue)}</span>
+                </div>
+                <div class="result-row">
+                    <span>Making Charge (${makingChargePercent}%)</span>
+                    <span>${formatAmountToIndianCurrency(makingChargeAmount)}</span>
+                </div>
+                <div class="result-row">
+                    <span>Total before GST</span>
+                    <span>${formatAmountToIndianCurrency(subtotalBeforeGst)}</span>
+                </div>
+                <div class="result-row">
+                    <span>GST (${taxPercent}%)</span>
+                    <span>${formatAmountToIndianCurrency(taxAmount)}</span>
+                </div>
+                <div class="result-row total">
+                    <span>Total w/o Hallmark</span>
+                    <span>${formatAmountToIndianCurrency(totalWithoutHallmark)}</span>
+                </div>
+                ${hallmarkPrice > 0 ? `
+                <div class="result-row">
+                    <span>Hallmark Price</span>
+                    <span>${formatAmountToIndianCurrency(hallmarkPrice)}</span>
+                </div>
+                ` : ''}
+                <div class="result-row total">
+                    <span>Final Total Price</span>
+                    <span>${formatAmountToIndianCurrency(finalTotalPrice)}</span>
+                </div>
+            </div>
+        `;
+
+        document.querySelector('#result-container').innerHTML = resultsHTML;
+
+        // Save preferences to fill in automatically next time
+        localStorage.setItem("goldAppConfig", JSON.stringify({
+            rate: goldRate,
+            making: makingChargePercent,
+            hallmark: hallmarkPrice
+        }));
     });
 
-
+    document.querySelector('#btn-clear').addEventListener('click', () => {
+        weightInput.value = '';
+        // Note: as per instructions, we keep making charge and rate intact
+        document.querySelector('#result-container').innerHTML = '';
+    });
 }
+
+document.addEventListener('DOMContentLoaded', loadMainPage);
