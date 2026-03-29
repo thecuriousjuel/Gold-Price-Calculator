@@ -149,12 +149,26 @@ function loadMainPage() {
             making: makingChargePercent,
             hallmark: hallmarkPrice
         }));
+
+        // Disable form values after calculation
+        weightInput.disabled = true;
+        makingChargeInput.disabled = true;
+        goldRateInput.disabled = true;
+        if (hallmarkInput) hallmarkInput.disabled = true;
+        document.querySelector('#btn-calculate').disabled = true;
     });
 
     document.querySelector('#btn-clear').addEventListener('click', () => {
         weightInput.value = '';
         // Note: as per instructions, we keep making charge and rate intact
         document.querySelector('#result-container').innerHTML = '';
+
+        // Re-enable input fields to allow new values
+        weightInput.disabled = false;
+        makingChargeInput.disabled = false;
+        goldRateInput.disabled = false;
+        if (hallmarkInput) hallmarkInput.disabled = false;
+        document.querySelector('#btn-calculate').disabled = false;
     });
 }
 
