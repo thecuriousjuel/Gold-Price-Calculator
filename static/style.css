@@ -2,14 +2,55 @@
   --primary: #D4AF37; /* Gold */
   --primary-variant: #AA8C2C;
   --on-primary: #000000;
+  
+  /* Light Theme Variables (Default) */
+  --background: #F8F9FA;
+  --surface: #FFFFFF;
+  --on-background: #121212;
+  --on-surface: #1E1E1E;
+  --input-bg: #FFFFFF;
+  --input-focus-bg: #F0F4F8;
+  --border: #E0E0E0;
+  --label-color: #666666;
+  --input-disabled-bg: #F0F0F0;
+  --input-disabled-border: #D0D0D0;
+  --row-color: #555555;
+  --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --elevation-4: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] {
   --background: #121212;
   --surface: #1E1E1E;
   --on-background: #E0E0E0;
   --on-surface: #FFFFFF;
   --input-bg: #2C2C2C;
+  --input-focus-bg: #333333;
   --border: #444444;
+  --label-color: #AAAAAA;
+  --input-disabled-bg: #222222;
+  --input-disabled-border: #333333;
+  --row-color: #CCCCCC;
   --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --elevation-4: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #121212;
+    --surface: #1E1E1E;
+    --on-background: #E0E0E0;
+    --on-surface: #FFFFFF;
+    --input-bg: #2C2C2C;
+    --input-focus-bg: #333333;
+    --border: #444444;
+    --label-color: #AAAAAA;
+    --input-disabled-bg: #222222;
+    --input-disabled-border: #333333;
+    --row-color: #CCCCCC;
+    --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --elevation-4: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  }
 }
 
 body {
@@ -23,6 +64,7 @@ body {
   align-items: center;
   min-height: 100vh;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
@@ -42,7 +84,28 @@ body {
   padding: 32px;
   width: 100%;
   border: 1px solid rgba(212, 175, 55, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  position: relative;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--on-background);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(128, 128, 128, 0.2);
 }
 
 .card:hover {
@@ -89,14 +152,14 @@ body {
 .input-field input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 1px var(--primary);
-  background-color: #333333;
+  background-color: var(--input-focus-bg);
 }
 
 .input-field label {
   position: absolute;
   top: 18px;
   left: 16px;
-  color: #AAAAAA;
+  color: var(--label-color);
   font-size: 16px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
@@ -112,14 +175,14 @@ body {
 }
 
 .input-field input:not(:focus):not(:placeholder-shown) + label {
-  color: #AAAAAA;
+  color: var(--label-color);
 }
 
 .input-field input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  border-color: #333;
-  background-color: #222;
+  border-color: var(--input-disabled-border);
+  background-color: var(--input-disabled-bg);
 }
 
 /* Buttons */
@@ -189,7 +252,7 @@ body {
   justify-content: space-between;
   margin-bottom: 14px;
   font-size: 15px;
-  color: #CCCCCC;
+  color: var(--row-color);
 }
 
 .result-row span:last-child {
